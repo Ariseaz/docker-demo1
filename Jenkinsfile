@@ -20,10 +20,12 @@ node {
       stage('docker build/push') {
         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
           def app = docker.build("adenijiazeez/docker-nodejs-demo:${commit_id}", '.').push()
+          // send slack notification
+    slackSend (color: '#FF0000', message: "BUILD SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
         }
       }
    }
-   
+
    catch(e) {
     // mark build as failed
     currentBuild.result = "FAILURE";
