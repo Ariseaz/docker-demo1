@@ -1,25 +1,29 @@
 node {
    def commit_id
+   try {
+
+
    
-   stage('Preparation') {
-     checkout scm
-     sh "git rev-parse --short HEAD > .git/commit-id"                        
-     commit_id = readFile('.git/commit-id').trim()
-   }
+      stage('Preparation') {
+        checkout scm
+        sh "git rev-parse --short HEAD > .git/commit-id"                        
+        commit_id = readFile('.git/commit-id').trim()
+      }
 
-   stage('test') {
-     nodejs(nodeJSInstallationName: 'nodejs') {
-       sh 'npm install --only=dev'
-       sh 'npm test'
-     }
-   }
+      stage('test') {
+        nodejs(nodeJSInstallationName: 'nodejs') {
+          sh 'npm install --only=dev'
+          sh 'npm test'
+        }
+      }
 
-   stage('docker build/push') {
-     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-       def app = docker.build("adenijiazeez/docker-nodejs-demo:${commit_id}", '.').push()
-     }
+      stage('docker build/push') {
+        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+          def app = docker.build("adenijiazeez/docker-nodejs-demo:${commit_id}", '.').push()
+        }
+      }
    }
-
+   
    catch(e) {
     // mark build as failed
     currentBuild.result = "FAILURE";
