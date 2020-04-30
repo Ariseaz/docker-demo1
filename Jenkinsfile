@@ -21,7 +21,7 @@ node {
         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
           def app = docker.build("adenijiazeez/docker-nodejs-demo:${commit_id}", '.').push()
           // send slack notification
-          slackSend (color: '#228C22', message: "BUILD SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) ${commit_id} ")
+          slackSend (color: '#228C22', message: "BUILD SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) ")
         }
       }
    }
